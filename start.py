@@ -2,12 +2,9 @@ import sys
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel, QLineEdit, QGridLayout, QApplication
 from PyQt5.QtCore import Qt
 from qt_material import apply_stylesheet
-
-
-# import
 
 
 class MainWin(QWidget):
@@ -84,8 +81,6 @@ class MainWin(QWidget):
         print(content)
         for i in content:
             print(i)
-        # pass
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
