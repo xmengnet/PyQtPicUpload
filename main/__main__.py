@@ -11,6 +11,7 @@ from tool import QSSLoader
 class MainWindow(QWidget):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.setWindowTitle("OSS图床上传")
         layout = QHBoxLayout(self, spacing=0)
         self.listWidget = QListWidget()
         self.resize(800, 600)
@@ -62,10 +63,10 @@ class MainWindow(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     main = MainWindow()
-    style_file = 'resource/current.qss'
+    style_file = os.getcwd()+'/resource/current.qss'
     style_sheet = QSSLoader.QSSLoader.read_qss_file(style_file)
     # apply_stylesheet(app, theme='light_blue.xml')
-    app.setWindowIcon(QIcon('./images/icon.svg'))
+    app.setWindowIcon(QIcon(os.getcwd()+'/images/icon.svg'))
     main.setStyleSheet(style_sheet)
 
     main.show()
