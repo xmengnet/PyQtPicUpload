@@ -1,91 +1,72 @@
+import os
 import sys
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import Qt, QSize
 
-from PyQt5 import QtCore
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QDialog, QLabel, QLineEdit, QGridLayout, QApplication
-from PyQt5.QtCore import Qt
-from qt_material import apply_stylesheet
+from tool.UploadTip import UploadTip
+from tool.ConfigWidget import ConfigView
+from tool import QSSLoader
 
-
-class MainWin(QWidget):
+class MainWindow(QWidget):
     def __init__(self):
-        super(MainWin, self).__init__()
-        self.setWindowTitle('上传至阿里云cos')
-        self.resize(400, 500)
-        self.setWindowIcon(QIcon('./images/icon.png'))
+        super(MainWindow, self).__init__()
+        layout = QHBoxLayout(self, spacing=0)
+        self.listWidget = QListWidget()
+        self.resize(800, 600)
 
-        layout = QVBoxLayout()
+        layout.addWidget(self.listWidget)
 
-        self.config_btn = QPushButton('配置')
-        # self.config_btn
-        self.config_btn.setFixedSize(60, 40)
+        # 右侧层叠窗口
+        self.stackedWidget = QStackedWidget(self)
+        layout.addWidget(self.stackedWidget)
 
-        self.config_btn.clicked.connect(self.configAction)
-        layout.addStretch()
-        layout.addWidget(self.config_btn, 0, Qt.AlignCenter)
-        layout.addStretch()
-        # layout.addLayout(tip_widget)
-        layout.addStretch()
+        layout.setContentsMargins(0, 0, 0, 0)
+
         self.setLayout(layout)
+        self.iniUI()
 
-    def configAction(self):
-        dialog = QDialog()
-        dialog.setMinimumWidth(500)
-        dialog.setWindowTitle("配置oss信息")
-        access_key_id_label = QLabel('access_key_id:')
-        access_key_id_text = QLineEdit()
-        access_key_secret_label = QLabel('access_key_secret:')
-        access_key_secret_text = QLineEdit()
-        access_key_secret_text.setEchoMode(QLineEdit.Password)
-        bucket_name_label = QLabel('bucket_name')
-        bucket_name_text = QLineEdit()
-        bucket_name_text.setPlaceholderText('设置存储空间名')
-        endpoint_label = QLabel('endpoint')
-        endpoint_text = QLineEdit()
-        endpoint_text.setPlaceholderText('地域节点(如：oss-cn-beijing.aliyuncs.com)')
-        upload_path_label = QLabel('upload_path')
-        upload_path_text = QLineEdit()
-        upload_path_text.setPlaceholderText('上传路径(如：images/)')
-        upload_domain_label = QLabel('upload_domain')
-        upload_domain_text = QLineEdit()
-        upload_domain_text.setPlaceholderText('绑定域名(需要带https://)')
-        dialog_layout = QGridLayout()
-        font = QFont()
-        font.setFamily("Arial")
-        font.setPointSize(50)
-        dialog.setFont(font)
-        dialog_layout.addWidget(access_key_id_label, 0, 0)
-        dialog_layout.addWidget(access_key_id_text, 0, 1)
-        dialog_layout.addWidget(access_key_secret_label, 1, 0)
-        dialog_layout.addWidget(access_key_secret_text, 1, 1)
-        dialog_layout.addWidget(bucket_name_label, 2, 0)
-        dialog_layout.addWidget(bucket_name_text, 2, 1)
-        dialog_layout.addWidget(endpoint_label, 3, 0)
-        dialog_layout.addWidget(endpoint_text, 3, 1)
-        dialog_layout.addWidget(upload_path_label, 4, 0)
-        dialog_layout.addWidget(upload_path_text, 4, 1)
-        dialog_layout.addWidget(upload_domain_label, 5, 0)
-        dialog_layout.addWidget(upload_domain_text, 5, 1)
-        save_btn = QPushButton('保存配置')
-        content = [access_key_id_text.text(), access_key_secret_text.text(), bucket_name_text.text(),
-                   endpoint_text.text(), upload_path_text.text(), upload_domain_text.text()]
+    def iniUI(self):
+        # 初始化界面
+        # 通过QListWidget的当前item变化来切换QStackedWidget中的序号
+        self.listWidget.currentRowChanged.connect(
+            self.stackedWidget.setCurrentIndex)
+        # 去掉边框
+        # self.listWidget.setFrameShape(QListWidget.NoFrame)
+        # # 隐藏滚动条
+        self.listWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.listWidget.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        save_btn.clicked.connect(lambda: self.save_oss_config(content))
-        dialog_layout.addWidget(save_btn, 6, 1)
-        dialog.setLayout(dialog_layout)
-        # 设置窗口的属性为ApplicationModal模态，用户只有关闭弹窗后，才能关闭主界面
-        dialog.setWindowModality(QtCore.Qt.ApplicationModal)
-        dialog.exec_()
+        # print(os.getcwd())
+        self.upload_item = QListWidgetItem(
+            QIcon(QPixmap(os.getcwd()+'/images/upload.png')), '上传区', self.listWidget)
+        self.set_item = QListWidgetItem(
+            QIcon(QPixmap(os.getcwd()+'/images/setting_icon.png')), '配置区域')
+        self.upload_item.setSizeHint(QSize(16777215, 60))
+        # 文字居中
+        self.upload_item.setTextAlignment(Qt.AlignCenter)
 
-    def save_oss_config(self, content):
-        print(content)
-        for i in content:
-            print(i)
+        self.set_item.setSizeHint(QSize(16777215, 60))
+        # 文字居中
+        self.set_item.setTextAlignment(Qt.AlignCenter)
+
+        self.listWidget.addItem(self.upload_item)
+        self.listWidget.addItem(self.set_item)
+        upload_widget = UploadTip()
+        config_widget = ConfigView()
+
+        self.stackedWidget.addWidget(upload_widget)
+        self.stackedWidget.addWidget(config_widget)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    main = MainWin()
-    apply_stylesheet(app, theme='dark_yellow.xml')
+    main = MainWindow()
+    style_file = 'resource/current.qss'
+    style_sheet = QSSLoader.QSSLoader.read_qss_file(style_file)
+    # apply_stylesheet(app, theme='light_blue.xml')
     app.setWindowIcon(QIcon('./images/icon.svg'))
+    main.setStyleSheet(style_sheet)
+
     main.show()
     sys.exit(app.exec_())

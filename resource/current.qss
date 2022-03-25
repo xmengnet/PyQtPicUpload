@@ -1,0 +1,64 @@
+/*去掉item虚线边框*/
+QListWidget, QListView, QTreeWidget, QTreeView {
+    outline: 0px;
+}
+/*设置左侧选项的最小最大宽度,文字颜色和背景颜色*/
+QListWidget {
+    min-width: 120px;
+    max-width: 120px;
+    color: white;
+    background: black;
+
+}
+
+QPushButton {
+    max-width: 120px;
+    color: white;
+    border-top-left-radius:10px;  
+    border-top-right-radius:10px;
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius:10px;
+    background: pink;
+}
+QPushButton:pressed,
+QPushButton:pressed:focus {
+    /* 改变背景色 */  
+  background-color: #f50057;
+  /* 改变边框风格 */  
+    border-style:inset; 
+    /* 改变边框风格 */  
+    border-style:inset;  
+}
+
+QPushButton#upload_btn {
+    padding: 3px 20px;
+    text-align:center;
+}
+
+
+/*被选中时的背景颜色和左边框颜色*/
+QListWidget::item:selected {
+    background: rgb(52, 52, 52);
+    border-right: 4px solid rgb(9, 187, 7);
+}
+/*鼠标悬停颜色*/
+HistoryPanel::item:hover {
+    background: rgb(52, 52, 52);
+}
+
+/*右侧的层叠窗口的背景颜色*/
+QStackedWidget {
+    background: rgb(30, 30, 30);
+}
+/*模拟的页面*/
+QLabel {
+    color: white;
+}
+QLineEdit {
+    border: 2px solid rgb(52,52,52);
+    border-top-left-radius:10px;  
+    border-top-right-radius:10px;
+    border-bottom-left-radius:10px;
+    border-bottom-right-radius:10px;
+
+}
