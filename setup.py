@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 from glob import glob
 
 VERSION = "0.1"
-INSTALL = ["oss2", "notify2", "dbus-python", "PyQt5", "json"]
+INSTALL = ["oss2", "notify2", "dbus-python", "PyQt5"]
 setup(
     name="PyQtPicUpload",
     version=VERSION,
