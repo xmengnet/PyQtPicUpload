@@ -1,0 +1,5 @@
+oss2
+notify2
+dbus-python
+PyQt5
+json
